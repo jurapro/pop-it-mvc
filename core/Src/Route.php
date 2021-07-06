@@ -30,16 +30,18 @@ class Route
             throw new Error('This path does not exist');
         }
 
-        if (!class_exists(self::$routes[$path][0])) {
+        $class = self::$routes[$path][0];
+        $action = self::$routes[$path][1];
+
+        if (!class_exists($class)) {
             throw new Error('This class does not exist');
         }
 
-        if (!method_exists(self::$routes[$path][0], self::$routes[$path][1])) {
+        if (!method_exists($class, $action)) {
             throw new Error('This method does not exist');
         }
 
-        $class = new self::$routes[$path][0];
-        $action = self::$routes[$path][1];
-        call_user_func([$class, $action]);
+
+        call_user_func([new $class, $action]);
     }
 }
