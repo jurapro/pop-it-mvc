@@ -3,14 +3,14 @@
 namespace Src;
 
 use Error;
+use FastRoute\Dispatcher;
 
 class Route
 {
-    private static array $routes = [];
     private static string $prefix = '';
-    private static $dispatcher;
+    private static Dispatcher $dispatcher;
 
-    public static function setDispatcher($dispatcher)
+    public static function setDispatcher(Dispatcher $dispatcher)
     {
         self::$dispatcher = $dispatcher;
     }
@@ -18,13 +18,6 @@ class Route
     public static function setPrefix(string $value)
     {
         self::$prefix = $value;
-    }
-
-    public static function add(string $route, array $action): void
-    {
-        if (!array_key_exists($route, self::$routes)) {
-            self::$routes[$route] = $action;
-        }
     }
 
     public function start(): void
@@ -42,12 +35,11 @@ class Route
 
         $routeInfo = self::$dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {
-            case \FastRoute\Dispatcher::NOT_FOUND:
+            case Dispatcher::NOT_FOUND:
                 throw new Error('NOT_FOUND');
-            case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
+            case Dispatcher::METHOD_NOT_ALLOWED:
                 throw new Error('METHOD_NOT_ALLOWED');
-            case \FastRoute\Dispatcher::FOUND:
+            case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
                 $class = $handler[0];
