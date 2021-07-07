@@ -1,23 +1,25 @@
 {
-    "name": "jurapro/pop-it-mvc",
-    "description": "Simple mvc framework",
-    "type": "project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "jurapro",
-            "email": "jurapro@yandex.ru"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=7.4",
-        "nikic/fast-route": "2.0.x-dev"
-    },
-    "autoload": {
-        "psr-4": {
-            "Src\\": "core/Src/",
-            "": "app/"
-        }
+  "name": "jurapro/pop-it-mvc",
+  "description": "Simple mvc framework",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "jurapro",
+      "email": "jurapro@yandex.ru"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^7.4 | ^8.0",
+    "nikic/fast-route": "2.0.x-dev",
+    "illuminate/database": "9.x-dev",
+    "illuminate/events": "9.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Src\\": "core/Src/",
+      "": "app/"
+    }
+  }
 }
