@@ -6,10 +6,10 @@ use Src\View;
 
 class Site
 {
-    public function index(): string
+    public function index(string $message): string
     {
         $view = new View();
-        return $view->render('site.hello', ['message' => 'index working']);
+        return $view->render('site.hello', ['message' => $message]);
     }
 
     public function hello(): string

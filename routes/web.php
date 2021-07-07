@@ -2,6 +2,10 @@
 
 use Src\Route;
 
-Route::add('go', [Controller\Site::class, 'index']);
-Route::add('hello', [Controller\Site::class, 'hello']);
 
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+    $r->addRoute('GET', '/go/{message}', [Controller\Site::class, 'index']);
+    $r->addRoute('GET', '/hello', [Controller\Site::class, 'hello']);
+});
+
+Route::setDispatcher($dispatcher);

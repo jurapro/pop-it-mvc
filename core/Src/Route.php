@@ -8,8 +8,14 @@ class Route
 {
     private static array $routes = [];
     private static string $prefix = '';
+    private static $dispatcher;
 
-    public static function setPrefix($value)
+    public static function setDispatcher($dispatcher)
+    {
+        self::$dispatcher = $dispatcher;
+    }
+
+    public static function setPrefix(string $value)
     {
         self::$prefix = $value;
     }
@@ -23,25 +29,32 @@ class Route
 
     public function start(): void
     {
-        $path = explode('?', $_SERVER['REQUEST_URI'])[0];
-        $path = substr($path, strlen(self::$prefix) + 1);
+        // Fetch method and URI from somewhere
+        $httpMethod = $_SERVER['REQUEST_METHOD'];
+        $uri = $_SERVER['REQUEST_URI'];
 
-        if (!array_key_exists($path, self::$routes)) {
-            throw new Error('This path does not exist');
+        // Strip query string (?foo=bar) and decode URI
+        if (false !== $pos = strpos($uri, '?')) {
+            $uri = substr($uri, 0, $pos);
+        }
+        $uri = rawurldecode($uri);
+        $uri = substr($uri, strlen(self::$prefix));
+
+        $routeInfo = self::$dispatcher->dispatch($httpMethod, $uri);
+        switch ($routeInfo[0]) {
+            case \FastRoute\Dispatcher::NOT_FOUND:
+                throw new Error('NOT_FOUND');
+            case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+                $allowedMethods = $routeInfo[1];
+                throw new Error('METHOD_NOT_ALLOWED');
+            case \FastRoute\Dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                $vars = $routeInfo[2];
+                $class = $handler[0];
+                $action = $handler[1];
+                call_user_func([new $class, $action], ...$vars);
+                break;
         }
 
-        $class = self::$routes[$path][0];
-        $action = self::$routes[$path][1];
-
-        if (!class_exists($class)) {
-            throw new Error('This class does not exist');
-        }
-
-        if (!method_exists($class, $action)) {
-            throw new Error('This method does not exist');
-        }
-
-
-        call_user_func([new $class, $action]);
     }
 }
