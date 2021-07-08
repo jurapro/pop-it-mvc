@@ -3,21 +3,51 @@
 namespace Src;
 
 use Error;
-use FastRoute\Dispatcher;
+
+use FastRoute\RouteCollector;
+use FastRoute\RouteParser\Std;
+use FastRoute\DataGenerator\MarkBased;
+use FastRoute\Dispatcher\MarkBased as Dispatcher;
 
 class Route
 {
-    private static string $prefix = '';
-    private static Dispatcher $dispatcher;
+    private static RouteCollector $routeCollector;
+    private string $prefix = '';
+    private Dispatcher $dispatcher;
 
-    public static function setDispatcher(Dispatcher $dispatcher)
+    public static function add($httpMethod, string $route, array $action): void
     {
-        self::$dispatcher = $dispatcher;
+        if (!isset(self::$routeCollector)) {
+            self::$routeCollector = new RouteCollector(new Std(), new MarkBased());
+        }
+        self::$routeCollector->addRoute($httpMethod, $route, $action);
     }
 
-    public static function setPrefix(string $value)
+    public static function group(string $prefix, callable $callback): void
     {
-        self::$prefix = $value;
+        if (!isset(self::$routeCollector)) {
+            self::$routeCollector = new RouteCollector(new Std(), new MarkBased());
+        }
+        self::$routeCollector->addGroup($prefix, $callback);
+    }
+
+    public function __construct()
+    {
+        $this->setDispatcher();
+    }
+
+    public function setDispatcher()
+    {
+        if (!isset(self::$routeCollector)) {
+            throw new Error('ROUTE_NOT_FOUND');
+        }
+        $loader = self::$routeCollector->getData();
+        $this->dispatcher = new Dispatcher($loader);
+    }
+
+    public function setPrefix(string $value = ''): void
+    {
+        $this->prefix = $value;
     }
 
     public function start(): void
@@ -31,9 +61,9 @@ class Route
             $uri = substr($uri, 0, $pos);
         }
         $uri = rawurldecode($uri);
-        $uri = substr($uri, strlen(self::$prefix));
+        $uri = substr($uri, strlen($this->prefix));
 
-        $routeInfo = self::$dispatcher->dispatch($httpMethod, $uri);
+        $routeInfo = $this->dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 throw new Error('NOT_FOUND');

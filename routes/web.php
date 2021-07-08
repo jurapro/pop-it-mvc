@@ -2,9 +2,7 @@
 
 use Src\Route;
 
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/go', [Controller\Site::class, 'index']);
-    $r->addRoute('GET', '/hello', [Controller\Site::class, 'hello']);
+Route::group('/site', function () {
+    Route::add('GET', '/', [Controller\Site::class, 'index']);
+    Route::add('GET', '/hello', [Controller\Site::class, 'hello']);
 });
-
-Route::setDispatcher($dispatcher);
