@@ -12,6 +12,7 @@ use FastRoute\Dispatcher\MarkBased as Dispatcher;
 class Route
 {
     private static RouteCollector $routeCollector;
+
     private string $prefix = '';
     private Dispatcher $dispatcher;
 
@@ -36,7 +37,7 @@ class Route
         $this->setDispatcher();
     }
 
-    public function setDispatcher()
+    public function setDispatcher(): void
     {
         if (!isset(self::$routeCollector)) {
             throw new Error('ROUTE_NOT_FOUND');
@@ -71,10 +72,9 @@ class Route
                 throw new Error('METHOD_NOT_ALLOWED');
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
-                $vars = $routeInfo[2];
                 $class = $handler[0];
                 $action = $handler[1];
-                call_user_func([new $class, $action], ...$vars);
+                call_user_func([new $class, $action], new Request());
                 break;
         }
     }
