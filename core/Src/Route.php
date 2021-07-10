@@ -32,8 +32,19 @@ class Route
         self::$routeCollector->addGroup($prefix, $callback);
     }
 
-    public function __construct()
+    public function redirect(string $url): void
     {
+        header('Location: ' . $this->getUrl($url));
+    }
+
+    public function getUrl(string $url): string
+    {
+        return $this->prefix . $url;
+    }
+
+    public function __construct(string $prefix = '')
+    {
+        $this->setPrefix($prefix);
         $this->setDispatcher();
     }
 
