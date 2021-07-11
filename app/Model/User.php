@@ -43,4 +43,16 @@ class User extends Model implements IdentityInterface
         return self::where(['login' => $credentials['login'],
             'password' => md5($credentials['password'])])->first();
     }
+
+    //Связь с моделью роль
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    //Есть ли роль текущего пользователя в массиве ролей
+    public function hasRole($roles): bool
+    {
+        return in_array($this->role->code, $roles);
+    }
 }

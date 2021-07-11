@@ -27,6 +27,11 @@ class Request
         return $this->body[$field];
     }
 
+    public function set($field, $value): void
+    {
+        $this->body[$field] = $value;
+    }
+
     public function files(): array
     {
         return $_FILES;
