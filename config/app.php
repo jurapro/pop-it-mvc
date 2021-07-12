@@ -9,5 +9,9 @@ return [
         'auth' => \Middlewares\AuthMiddleware::class,
         'can' => \Middlewares\CanMiddleware::class,
         'lower' => \Middlewares\LowerLoginMiddleware::class,
+    ],
+    'validators' => [
+        'required' => \Validators\RequireValidator::class,
+        'unique' => \Validators\UniqueValidator::class
     ]
 ];

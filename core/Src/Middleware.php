@@ -42,7 +42,7 @@ class Middleware
         foreach ($this->getMiddlewaresForRoute($httpMethod, $uri) as $middleware) {
             $args = explode(':', $middleware);
             //Создаем объект и вызываем метод handle
-            (new $routeMiddleware[$args[0]])->handle($args[1], $request);
+            (new $routeMiddleware[$args[0]])->handle($request, $args[1]);
         }
         //Возвращаем итоговый request
         return $request;
