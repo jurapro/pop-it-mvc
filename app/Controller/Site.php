@@ -10,7 +10,6 @@ use Src\Request;
 use Src\Validator\Validator;
 use Src\View;
 
-
 class Site
 {
     public function index(): string
