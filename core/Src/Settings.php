@@ -23,7 +23,7 @@ class Settings
 
     public function getRootPath(): string
     {
-        return '/' . $this->path['root'] ?? '';
+        return $this->path['root'] ? '/' . $this->path['root'] : '';
     }
 
     public function getViewsPath(): string

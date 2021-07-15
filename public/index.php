@@ -13,4 +13,3 @@ try {
     print_r($exception);
     echo '</pre>';
 }
-
