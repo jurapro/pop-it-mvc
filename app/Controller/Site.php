@@ -42,7 +42,6 @@ class Site
             app()->route->redirect('/go/');
             return false;
         }
-
     }
 
     public function login(Request $request): string

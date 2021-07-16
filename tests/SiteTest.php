@@ -1,5 +1,6 @@
 <?php
 
+use Model\User;
 use PHPUnit\Framework\TestCase;
 
 class SiteTest extends TestCase
@@ -10,6 +11,11 @@ class SiteTest extends TestCase
      */
     public function testSignup(string $httpMethod, array $userData, string $message): void
     {
+        //Выбираем занятый логин из базы данных
+        if ($userData['login'] === 'login is busy') {
+            $userData['login'] = User::get()->first()->login;
+        }
+
         // Создаем заглушку для класса Request.
         $request = $this->createMock(\Src\Request::class);
         // Переопределяем метод all() и свойство method
@@ -28,9 +34,13 @@ class SiteTest extends TestCase
             return;
         }
 
+        //Проверяем добавился ли пользователь в базу данных
+        $this->assertTrue((bool)User::where('login', $userData['login'])->count());
+        //Удаляем созданного пользователя из базы данных
+        User::where('login', $userData['login'])->delete();
+
         //Проверяем редирект при успешной регистрации
         $this->assertContains($message, xdebug_get_headers());
-
     }
 
     //Метод, возвращающий набор тестовых данных
@@ -43,7 +53,7 @@ class SiteTest extends TestCase
             ['POST', ['name' => '', 'login' => '', 'password' => ''],
                 '<pre>{"name":["Поле name пусто"],"login":["Поле login пусто"],"password":["Поле password пусто"]}</pre>',
             ],
-            ['POST', ['name' => 'admin', 'login' => 'admin', 'password' => 'admin'],
+            ['POST', ['name' => 'admin', 'login' => 'login is busy', 'password' => 'admin'],
                 '<pre>{"login":["Поле login должно быть уникально"]}</pre>',
             ],
             ['POST', ['name' => 'admin', 'login' => md5(time()), 'password' => 'admin'],
@@ -55,11 +65,14 @@ class SiteTest extends TestCase
     //Настройка конфигурации окружения
     protected function setUp(): void
     {
+        //Установка переменной среды
+        $_SERVER['DOCUMENT_ROOT'] = '/var/www/pop-it-mvc';
+
         //Создаем экземпляр приложения
         $GLOBALS['app'] = new Src\Application(new Src\Settings([
-            'app' => include '../config/app.php',
-            'db' => include '../config/db.php',
-            'path' => include '../config/path.php',
+            'app' => include $_SERVER['DOCUMENT_ROOT'] . '/config/app.php',
+            'db' => include $_SERVER['DOCUMENT_ROOT'] . '/config/db.php',
+            'path' => include $_SERVER['DOCUMENT_ROOT'] . '/config/path.php',
         ]));
 
         //Глобальная функция для доступа к объекту приложения
@@ -69,9 +82,6 @@ class SiteTest extends TestCase
                 return $GLOBALS['app'];
             }
         }
-
-        //Установка переменной среды
-        $_SERVER['DOCUMENT_ROOT'] = '/var/www/pop-it-mvc';
     }
 
 }
