@@ -12,10 +12,12 @@
   "minimum-stability": "dev",
   "require": {
     "php": "^7.4 | ^8.0",
+    "ext-xdebug": "*",
     "nikic/fast-route": "2.0.x-dev",
     "illuminate/database": "9.x-dev",
     "illuminate/events": "9.x-dev",
-    "jurapro/collect": "dev-master"
+    "jurapro/collect": "dev-master",
+    "phpunit/phpunit": "9.5.x-dev"
   },
   "autoload": {
     "psr-4": {

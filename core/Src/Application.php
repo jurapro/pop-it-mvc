@@ -25,6 +25,11 @@ class Application
         $this->dbManager = new Capsule();
         //Создаем класс для аутентификации на основе настроек приложения
         $this->auth = new $this->settings->app['auth'];
+
+        //Настройка для работы с базой данных
+        $this->dbRun();
+        //Инициализация класса пользователя на основе настроек приложеиня
+        $this->auth::init(new $this->settings->app['identity']);
     }
 
     public function __get($key)
@@ -50,10 +55,6 @@ class Application
 
     public function run(): void
     {
-        //Настройка для работы с базой данных
-        $this->dbRun();
-        //Инициализация класса пользователя на основе настроек приложеиня
-        $this->auth::init(new $this->settings->app['identity']);
         //Запуск маршрутизации
         $this->route->start();
     }

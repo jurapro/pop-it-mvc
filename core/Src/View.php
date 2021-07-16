@@ -21,9 +21,8 @@ class View
     //Полный путь до директории с представлениями
     private function getRoot(): string
     {
-        global $app;
-        $root = $app->settings->getRootPath();
-        $path = $app->settings->getViewsPath();
+        $root = app()->settings->getRootPath();
+        $path = app()->settings->getViewsPath();
 
         return $_SERVER['DOCUMENT_ROOT'] . $root . $path;
     }
@@ -44,7 +43,6 @@ class View
     public function render(string $view = '', array $data = []): string
     {
         $path = $this->getPathToView($view);
-
         if (file_exists($this->getPathToMain()) && file_exists($path)) {
 
             //Импортирует переменные из массива в текущую таблицу символов
@@ -52,12 +50,11 @@ class View
 
             //Включение буферизации вывода
             ob_start();
-            require_once $path;
+            require $path;
             //Помещаем буфер в переменную и очищаем его
             $content = ob_get_clean();
-
             //Возвращаем собранную страницу
-            return require_once($this->getPathToMain());
+            return require($this->getPathToMain());
         }
         throw new Exception('Error render');
     }
