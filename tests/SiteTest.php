@@ -65,15 +65,12 @@ class SiteTest extends TestCase
     //Настройка конфигурации окружения
     protected function setUp(): void
     {
-        //Установка переменной среды
+        //Установка переменых среды
         $_SERVER['DOCUMENT_ROOT'] = '/var/www/pop-it-mvc';
+        $_SERVER['REQUEST_URI'] = '';
 
         //Создаем экземпляр приложения
-        $GLOBALS['app'] = new Src\Application(new Src\Settings([
-            'app' => include $_SERVER['DOCUMENT_ROOT'] . '/config/app.php',
-            'db' => include $_SERVER['DOCUMENT_ROOT'] . '/config/db.php',
-            'path' => include $_SERVER['DOCUMENT_ROOT'] . '/config/path.php',
-        ]));
+        $GLOBALS['app'] = new Src\Application(include $_SERVER['DOCUMENT_ROOT'] . '/config/app.php');
 
         //Глобальная функция для доступа к объекту приложения
         if (!function_exists('app')) {

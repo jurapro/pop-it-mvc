@@ -13,6 +13,7 @@
   "require": {
     "php": "^7.4 | ^8.0",
     "ext-xdebug": "*",
+    "ext-json": "*",
     "nikic/fast-route": "2.0.x-dev",
     "illuminate/database": "9.x-dev",
     "illuminate/events": "9.x-dev",

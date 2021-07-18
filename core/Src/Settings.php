@@ -18,7 +18,7 @@ class Settings
         if (array_key_exists($key, $this->_settings)) {
             return $this->_settings[$key];
         }
-        throw new Error('Accessing a non-existent property');
+        throw new Error("Accessing a non-existent property $key in settings");
     }
 
     public function getRootPath(): string
@@ -34,5 +34,25 @@ class Settings
     public function getDbSetting(): array
     {
         return $this->db ?? [];
+    }
+
+    public function getRoutePath(): string
+    {
+        return '/' . $this->path['routes'] ?? '';
+    }
+
+    public function getAuthClassName(): string
+    {
+        return $this->app['auth'] ?? '';
+    }
+
+    public function getIdentityClassName(): string
+    {
+        return $this->app['identity'] ?? '';
+    }
+
+    public function removeAppMiddleware(string $key): void
+    {
+        unset($this->_settings['app']['routeAppMiddleware'][$key]);
     }
 }
