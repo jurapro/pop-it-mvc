@@ -11,11 +11,12 @@ class KernelProvider extends AbstractProvider
 
     public function register(): void
     {
-        $this->settings = $this->getConfigs($_SERVER['DOCUMENT_ROOT'] . '/config');
+        $this->settings = $this->getConfigs(__DIR__ . '/../../config');
     }
 
     public function boot(): void
     {
+
         $this->app->bind('settings', new Settings($this->settings));
     }
 

@@ -21,9 +21,14 @@ class Settings
         throw new Error("Accessing a non-existent property $key in settings");
     }
 
-    public function getRootPath(): string
+    public function getBasePath(): string
     {
-        return $this->path['root'] ? '/' . $this->path['root'] : '';
+        return $this->path['baseUrl'] ? '/' . $this->path['baseUrl'] : '';
+    }
+
+    public function getRootDir(): string
+    {
+        return __DIR__ . '/../..';
     }
 
     public function getViewsPath(): string

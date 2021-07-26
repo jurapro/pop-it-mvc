@@ -39,7 +39,6 @@ class SiteTest extends TestCase
         //Удаляем созданного пользователя из базы данных
         User::where('login', $userData['login'])->delete();
 
-        //Проверяем редирект при успешной регистрации
         $this->assertContains($message, xdebug_get_headers());
     }
 
@@ -57,7 +56,7 @@ class SiteTest extends TestCase
                 '<pre>{"login":["Поле login должно быть уникально"]}</pre>',
             ],
             ['POST', ['name' => 'admin', 'login' => md5(time()), 'password' => 'admin'],
-                'Location: /go/',
+                'Location: /pop-it-mvc/go/',
             ],
         ];
     }
@@ -65,12 +64,12 @@ class SiteTest extends TestCase
     //Настройка конфигурации окружения
     protected function setUp(): void
     {
+
         //Установка переменых среды
-        $_SERVER['DOCUMENT_ROOT'] = '/var/www/pop-it-mvc';
         $_SERVER['REQUEST_URI'] = '';
 
         //Создаем экземпляр приложения
-        $GLOBALS['app'] = new Src\Application(include $_SERVER['DOCUMENT_ROOT'] . '/config/app.php');
+        $GLOBALS['app'] = new Src\Application(include __DIR__. '/../config/app.php');
 
         //Глобальная функция для доступа к объекту приложения
         if (!function_exists('app')) {

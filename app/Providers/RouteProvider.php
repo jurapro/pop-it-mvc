@@ -14,7 +14,7 @@ class RouteProvider extends AbstractProvider
 
     public function boot(): void
     {
-        $this->app->bind('route', Route::single()->setPrefix($this->app->settings->getRootPath()));
+        $this->app->bind('route', Route::single()->setPrefix($this->app->settings->getBasePath()));
 
         if ($this->checkPrefix('/api')) {
             //Если префикс адреса api то удаляем не нужные middleware
@@ -23,7 +23,7 @@ class RouteProvider extends AbstractProvider
 
             //Загружаем маршруты из файла для апи
             Route::group('/api', function () {
-                require_once $_SERVER['DOCUMENT_ROOT'] . $this->app->settings->getRoutePath() . '/api.php';
+                require_once __DIR__ . '/../..' . $this->app->settings->getRoutePath() . '/api.php';
             });
             return;
         }
@@ -31,14 +31,14 @@ class RouteProvider extends AbstractProvider
         //Удаляем обработку json данных
         $this->app->settings->removeAppMiddleware('json');
         //Загружаем маршруты из стандартного файла
-        require_once $_SERVER['DOCUMENT_ROOT'] . $this->app->settings->getRoutePath() . '/web.php';
+        require_once __DIR__ . '/../..' . $this->app->settings->getRoutePath() . '/web.php';
 
     }
 
     private function getUri(): string
     {
         //Возвращает адрес без пути до директории
-        return substr($_SERVER['REQUEST_URI'], strlen($this->app->settings->getRootPath()));
+        return substr($_SERVER['REQUEST_URI'], strlen($this->app->settings->getBasePath()));
     }
 
     private function checkPrefix(string $prefix): bool

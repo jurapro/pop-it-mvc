@@ -21,10 +21,10 @@ class View
     //Полный путь до директории с представлениями
     private function getRoot(): string
     {
-        $root = app()->settings->getRootPath();
+        $root = app()->settings->getRootDir();
         $path = app()->settings->getViewsPath();
 
-        return $_SERVER['DOCUMENT_ROOT'] . $root . $path;
+        return $root . $path;
     }
 
     //Путь до основного файла с шаблоном сайта
